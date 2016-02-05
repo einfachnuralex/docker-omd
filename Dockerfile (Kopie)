@@ -1,0 +1,31 @@
+# Open Monitoring Distribution
+#
+# Forked from https://github.com/jwarlander/docker-omd
+#
+## Version: 0.1
+# FROM debian:jessie
+FROM ubuntu:14.04
+MAINTAINER einfachnuralex@gmx.net
+
+RUN apt-get install -y lsb-release
+RUN apt-get update
+RUN apt-get install -y gdebi-core python-software-properties wget nagios-plugins-basic
+
+RUN wget https://mathias-kettner.de/support/1.2.6p10/check-mk-raw-1.2.6p10_0.trusty_amd64.deb
+RUN gdebi -n -q check-mk-raw-1.2.6p10_0.trusty_amd64.deb 
+
+RUN omd create monitoring
+RUN omd config monitoring set TMPFS off
+RUN omd config monitoring set APACHE_TCP_ADDR 0.0.0.0
+
+RUN omd create testing
+RUN omd config testing set TMPFS off
+RUN omd config testing set APACHE_TCP_ADDR 0.0.0.0
+
+# # Add watchdog script
+ADD entrypoint.sh /entrypoint.sh
+
+# # Set up runtime options
+EXPOSE 80 5000 5001
+ENTRYPOINT ["/entrypoint.sh"]
+
