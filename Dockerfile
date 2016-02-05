@@ -26,6 +26,9 @@ RUN omd config testing set APACHE_TCP_ADDR 0.0.0.0
 # # Add watchdog script
 ADD entrypoint.sh /entrypoint.sh
 
+## Add term env var
+ENV TERM xterm
+
 # # Set up runtime options
 EXPOSE 80 5000 5001
 ENTRYPOINT ["/entrypoint.sh"]
